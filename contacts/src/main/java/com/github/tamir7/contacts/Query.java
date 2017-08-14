@@ -47,9 +47,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding string values that contain the provided string.
      *
-     * @param field     The field that the string to match is stored in.
-     * @param value     The substring that the value must contain.
-     * @return          this, so you can chain this call.
+     * @param field The field that the string to match is stored in.
+     * @param value The substring that the value must contain.
+     * @return this, so you can chain this call.
      */
     public Query whereContains(Contact.Field field, Object value) {
         addNewConstraint(field, Where.contains(field.getColumn(), value));
@@ -59,9 +59,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding string values that start with the provided string.
      *
-     * @param field     The field that the string to match is stored in.
-     * @param value     The substring that the value must start with.
-     * @return          this, so you can chain this call.
+     * @param field The field that the string to match is stored in.
+     * @param value The substring that the value must start with.
+     * @return this, so you can chain this call.
      */
     public Query whereStartsWith(Contact.Field field, Object value) {
         addNewConstraint(field, Where.startsWith(field.getColumn(), value));
@@ -71,9 +71,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding values that equal the provided value.
      *
-     * @param field     The field that the value to match is stored in.
-     * @param value     The value that the field value must be equal to.
-     * @return          this, so you can chain this call.
+     * @param field The field that the value to match is stored in.
+     * @param value The value that the field value must be equal to.
+     * @return this, so you can chain this call.
      */
     public Query whereEqualTo(Contact.Field field, Object value) {
         addNewConstraint(field, Where.equalTo(field.getColumn(), value));
@@ -84,9 +84,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding values that NOT equal the provided value.
      *
-     * @param field     The field that the value to match is stored in.
-     * @param value     The value that the field value must be NOT equal to.
-     * @return          this, so you can chain this call.
+     * @param field The field that the value to match is stored in.
+     * @param value The value that the field value must be NOT equal to.
+     * @return this, so you can chain this call.
      */
     public Query whereNotEqualTo(Contact.Field field, Object value) {
         addNewConstraint(field, Where.notEqualTo(field.getColumn(), value));
@@ -155,7 +155,7 @@ public final class Query {
     }
 
     private List<Long> findIds(List<Long> ids, String mimeType, Where innerWhere) {
-        String[] projection = { ContactsContract.RawContacts.CONTACT_ID};
+        String[] projection = {ContactsContract.RawContacts.CONTACT_ID};
         Where where = Where.equalTo(ContactsContract.Data.MIMETYPE, mimeType);
         where = addWhere(where, innerWhere);
         if (!ids.isEmpty()) {
@@ -252,10 +252,15 @@ public final class Query {
                 mimes.add(field.getMimeType());
             }
         }
+        for (Contact.AbstractField field : Contact.CustomField.values()) {
+            if (field.getMimeType() != null) {
+                mimes.add(field.getMimeType());
+            }
+        }
         return Where.in(ContactsContract.Data.MIMETYPE, new ArrayList<Object>(mimes));
     }
 
-    private void addNewConstraint(Contact.Field field, Where where)  {
+    private void addNewConstraint(Contact.Field field, Where where) {
         if (field.getMimeType() == null) {
             defaultWhere = addWhere(defaultWhere, where);
         } else {
@@ -337,6 +342,14 @@ public final class Query {
                     contact.addAddress(address);
                 }
                 break;
+            default:
+                if (mimeType.equals(Contact.CustomField.LunarBirthday.getMimeType())) {
+                    String lunarBirthday = LunarBirthdayUtil.getLunarBirthday(helper);
+                    if (lunarBirthday != null) {
+                        contact.addEvent(new Event(lunarBirthday, Event.Type.LUNAR_BIRTHDAY));
+                    }
+                }
+                break;
         }
     }
 
@@ -349,6 +362,12 @@ public final class Query {
 
         for (Contact.AbstractField field : include) {
             projection.add(field.getColumn());
+        }
+
+        for (Contact.AbstractField field : Contact.CustomField.values()) {
+            if (field.getColumn() != null) {
+                projection.add(field.getColumn());
+            }
         }
 
         return projection.toArray(new String[projection.size()]);

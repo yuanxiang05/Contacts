@@ -27,76 +27,76 @@ class CursorHelper {
     }
 
     Long getContactId() {
-        return getLong(c, ContactsContract.RawContacts.CONTACT_ID);
+        return getLong(ContactsContract.RawContacts.CONTACT_ID);
     }
 
     String getMimeType() {
-        return getString(c, ContactsContract.Data.MIMETYPE);
+        return getString(ContactsContract.Data.MIMETYPE);
     }
 
     String getDisplayName() {
-        return getString(c, ContactsContract.Data.DISPLAY_NAME);
+        return getString(ContactsContract.Data.DISPLAY_NAME);
     }
 
     String getGivenName() {
-        return getString(c, ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
+        return getString(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
     }
 
     String getFamilyName() {
-        return getString(c, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
+        return getString(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
     }
 
     String getCompanyName() {
-        return getString(c, ContactsContract.CommonDataKinds.Organization.COMPANY);
+        return getString(ContactsContract.CommonDataKinds.Organization.COMPANY);
     }
 
     String getCompanyTitle() {
-        return getString(c, ContactsContract.CommonDataKinds.Organization.TITLE);
+        return getString(ContactsContract.CommonDataKinds.Organization.TITLE);
     }
 
     String getWebsite() {
-        return getString(c, ContactsContract.CommonDataKinds.Website.URL);
+        return getString(ContactsContract.CommonDataKinds.Website.URL);
     }
 
     String getNote() {
-        return getString(c, ContactsContract.CommonDataKinds.Note.NOTE);
+        return getString(ContactsContract.CommonDataKinds.Note.NOTE);
     }
 
     Address getAddress() {
-        String address = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS);
+        String address = getString(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS);
         if (address == null) {
             return null;
         }
 
-        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.StructuredPostal.TYPE);
+        Integer typeValue = getInt(ContactsContract.CommonDataKinds.StructuredPostal.TYPE);
         Address.Type type = typeValue == null ? Address.Type.UNKNOWN : Address.Type.fromValue(typeValue);
 
-        String street = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.STREET);
-        String city = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.CITY);
-        String region = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.REGION);
-        String postcode = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE);
-        String country = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY);
+        String street = getString(ContactsContract.CommonDataKinds.StructuredPostal.STREET);
+        String city = getString(ContactsContract.CommonDataKinds.StructuredPostal.CITY);
+        String region = getString(ContactsContract.CommonDataKinds.StructuredPostal.REGION);
+        String postcode = getString(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE);
+        String country = getString(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY);
 
         if (!type.equals(Address.Type.CUSTOM)) {
             return new Address(address, street, city, region, postcode, country, type);
         }
 
-        String label = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.LABEL);
+        String label = getString(ContactsContract.CommonDataKinds.StructuredPostal.LABEL);
         return new Address(address, street, city, region, postcode, country, label);
     }
 
     PhoneNumber getPhoneNumber() {
-        String number = getString(c, ContactsContract.CommonDataKinds.Phone.NUMBER);
+        String number = getString(ContactsContract.CommonDataKinds.Phone.NUMBER);
         if (number == null) {
             return null;
         }
 
         String normalizedNumber = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            normalizedNumber = getString(c, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
+            normalizedNumber = getString(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
         }
 
-        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Phone.TYPE);
+        Integer typeValue = getInt(ContactsContract.CommonDataKinds.Phone.TYPE);
         PhoneNumber.Type type = typeValue == null ? PhoneNumber.Type.UNKNOWN :
                 PhoneNumber.Type.fromValue(typeValue);
         if (!type.equals(PhoneNumber.Type.CUSTOM)) {
@@ -104,55 +104,55 @@ class CursorHelper {
         }
 
         return new PhoneNumber(number,
-                getString(c, ContactsContract.CommonDataKinds.Phone.LABEL), normalizedNumber);
+                getString(ContactsContract.CommonDataKinds.Phone.LABEL), normalizedNumber);
     }
 
     Email getEmail() {
-        String address = getString(c, ContactsContract.CommonDataKinds.Email.ADDRESS);
+        String address = getString(ContactsContract.CommonDataKinds.Email.ADDRESS);
         if (address == null) {
             return null;
         }
 
-        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Email.TYPE);
+        Integer typeValue = getInt(ContactsContract.CommonDataKinds.Email.TYPE);
         Email.Type type = typeValue == null ? Email.Type.UNKNOWN : Email.Type.fromValue(typeValue);
         if (!type.equals(Email.Type.CUSTOM)) {
             return new Email(address, type);
         }
 
-        return new Email(address, getString(c, ContactsContract.CommonDataKinds.Email.LABEL));
+        return new Email(address, getString(ContactsContract.CommonDataKinds.Email.LABEL));
     }
 
     String getPhotoUri() {
-        return getString(c, ContactsContract.Data.PHOTO_URI);
+        return getString(ContactsContract.Data.PHOTO_URI);
     }
 
 
     Event getEvent() {
-        String startDate = getString(c, ContactsContract.CommonDataKinds.Event.START_DATE);
+        String startDate = getString(ContactsContract.CommonDataKinds.Event.START_DATE);
         if (startDate == null) {
             return null;
         }
 
-        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Event.TYPE);
-        Event.Type type = typeValue ==  null ? Event.Type.UNKNOWN : Event.Type.fromValue(typeValue);
+        Integer typeValue = getInt(ContactsContract.CommonDataKinds.Event.TYPE);
+        Event.Type type = typeValue == null ? Event.Type.UNKNOWN : Event.Type.fromValue(typeValue);
         if (!type.equals(Event.Type.CUSTOM)) {
             return new Event(startDate, type);
         }
 
-        return new Event(startDate, getString(c, ContactsContract.CommonDataKinds.Event.LABEL));
+        return new Event(startDate, getString(ContactsContract.CommonDataKinds.Event.LABEL));
     }
 
-    private String getString(Cursor c, String column) {
+    String getString(String column) {
         int index = c.getColumnIndex(column);
         return index == -1 ? null : c.getString(index);
     }
 
-    private Integer getInt(Cursor c, String column) {
+    Integer getInt(String column) {
         int index = c.getColumnIndex(column);
         return index == -1 ? null : c.getInt(index);
     }
 
-    private  Long getLong(Cursor c, String column) {
+    Long getLong(String column) {
         int index = c.getColumnIndex(column);
         return index == -1 ? null : c.getLong(index);
     }

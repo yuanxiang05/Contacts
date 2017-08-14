@@ -144,7 +144,31 @@ public final class Contact {
         }
     }
 
-    Contact() {}
+    enum CustomField implements AbstractField {
+
+        LunarBirthday(LunarBirthdayUtil.MIME_TYPE, LunarBirthdayUtil.COLUMN);
+
+        private final String column;
+        private final String mimeType;
+
+        CustomField(String mimeType, String column) {
+            this.mimeType = mimeType;
+            this.column = column;
+        }
+
+        @Override
+        public String getMimeType() {
+            return mimeType;
+        }
+
+        @Override
+        public String getColumn() {
+            return column;
+        }
+    }
+
+    Contact() {
+    }
 
     void setId(Long id) {
         this.id = id;
@@ -318,7 +342,7 @@ public final class Contact {
     public String getCompanyTitle() {
         return companyTitle;
     }
-  
+
     /**
      * Gets the list of all websites the contact has
      *
@@ -336,7 +360,7 @@ public final class Contact {
     public String getNote() {
         return note;
     }
-  
+
     /**
      * Gets the list of addresses
      *
@@ -347,7 +371,7 @@ public final class Contact {
     }
 
     private Event getEvent(Event.Type type) {
-        for (Event event: events) {
+        for (Event event : events) {
             if (type.equals(event.getType())) {
                 return event;
             }

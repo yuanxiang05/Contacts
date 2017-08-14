@@ -32,6 +32,7 @@ public class Event {
         ANNIVERSARY,
         OTHER,
         BIRTHDAY,
+        LUNAR_BIRTHDAY,
         UNKNOWN;
 
         static Type fromValue(int value) {
