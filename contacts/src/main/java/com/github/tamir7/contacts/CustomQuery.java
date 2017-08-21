@@ -344,7 +344,7 @@ public abstract class CustomQuery<T extends Contact> {
                         contact.addEvent(new Event(lunarBirthday, Event.Type.LUNAR_BIRTHDAY));
                     }
                 } else {
-                    buildCustomFieldToContact(mimeType, contact);
+                    buildCustomFieldToContact(helper.getCursor(), mimeType, contact);
                 }
                 break;
         }
@@ -352,7 +352,7 @@ public abstract class CustomQuery<T extends Contact> {
 
     protected abstract T getCustomContact();
 
-    protected abstract void buildCustomFieldToContact(String mimeType, T contact);
+    protected abstract void buildCustomFieldToContact(Cursor cursor, String mimeType, T contact);
 
     private String[] buildProjection() {
         Set<String> projection = new HashSet<>();

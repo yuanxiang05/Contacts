@@ -20,10 +20,15 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 class CursorHelper {
+
     private final Cursor c;
 
     CursorHelper(Cursor c) {
         this.c = c;
+    }
+
+    Cursor getCursor() {
+        return c;
     }
 
     Long getContactId() {
