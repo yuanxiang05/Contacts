@@ -32,14 +32,14 @@ import java.util.Set;
 /**
  * The Query class defines a query that is used to fetch Contact objects.
  */
-public final class Query {
+public abstract class CustomQuery<T extends Contact> {
     private final Context context;
     private final Map<String, Where> mimeWhere = new HashMap<>();
     private Where defaultWhere = null;
-    private Set<Contact.Field> include = new HashSet<>();
-    private List<Query> innerQueries;
+    private Set<Contact.AbstractField> include = new HashSet<>();
+    private List<CustomQuery> innerQueries;
 
-    Query(Context context) {
+    public CustomQuery(Context context) {
         this.context = context;
         include.addAll(Arrays.asList(Contact.Field.values()));
     }
@@ -51,7 +51,7 @@ public final class Query {
      * @param value The substring that the value must contain.
      * @return this, so you can chain this call.
      */
-    public Query whereContains(Contact.Field field, Object value) {
+    public CustomQuery whereContains(Contact.AbstractField field, Object value) {
         addNewConstraint(field, Where.contains(field.getColumn(), value));
         return this;
     }
@@ -63,7 +63,7 @@ public final class Query {
      * @param value The substring that the value must start with.
      * @return this, so you can chain this call.
      */
-    public Query whereStartsWith(Contact.Field field, Object value) {
+    public CustomQuery whereStartsWith(Contact.AbstractField field, Object value) {
         addNewConstraint(field, Where.startsWith(field.getColumn(), value));
         return this;
     }
@@ -75,7 +75,7 @@ public final class Query {
      * @param value The value that the field value must be equal to.
      * @return this, so you can chain this call.
      */
-    public Query whereEqualTo(Contact.Field field, Object value) {
+    public CustomQuery whereEqualTo(Contact.AbstractField field, Object value) {
         addNewConstraint(field, Where.equalTo(field.getColumn(), value));
         return this;
     }
@@ -88,7 +88,7 @@ public final class Query {
      * @param value The value that the field value must be NOT equal to.
      * @return this, so you can chain this call.
      */
-    public Query whereNotEqualTo(Contact.Field field, Object value) {
+    public CustomQuery whereNotEqualTo(Contact.AbstractField field, Object value) {
         addNewConstraint(field, Where.notEqualTo(field.getColumn(), value));
         return this;
     }
@@ -98,7 +98,7 @@ public final class Query {
      *
      * @return this, so you can chain this call.
      */
-    public Query hasPhoneNumber() {
+    public CustomQuery hasPhoneNumber() {
         defaultWhere = addWhere(defaultWhere, Where.notEqualTo(ContactsContract.Data.HAS_PHONE_NUMBER, 0));
         return this;
     }
@@ -112,7 +112,7 @@ public final class Query {
      * @param queries The list of Queries to 'or' together.
      * @return A query that is the 'or' of the passed in queries.
      */
-    public Query or(List<Query> queries) {
+    public CustomQuery or(List<CustomQuery> queries) {
         innerQueries = queries;
         return this;
     }
@@ -123,7 +123,7 @@ public final class Query {
      * @param fields The array of keys to include in the result.
      * @return this, so you can chain this call.
      */
-    public Query include(Contact.Field... fields) {
+    public CustomQuery include(Contact.AbstractField... fields) {
         include.clear();
         include.addAll(Arrays.asList(fields));
         return this;
@@ -134,11 +134,11 @@ public final class Query {
      *
      * @return A list of all contacts obeying the conditions set in this query.
      */
-    public List<Contact> find() {
+    public List<T> find() {
         List<Long> ids = new ArrayList<>();
 
         if (innerQueries != null) {
-            for (Query query : innerQueries) {
+            for (CustomQuery query : innerQueries) {
                 ids.addAll(query.findInner());
             }
         } else {
@@ -207,7 +207,7 @@ public final class Query {
         return ids;
     }
 
-    private List<Contact> find(List<Long> ids) {
+    private List<T> find(List<Long> ids) {
         Where where;
         if (ids == null) {
             where = defaultWhere;
@@ -223,15 +223,15 @@ public final class Query {
                 null,
                 ContactsContract.Data.DISPLAY_NAME);
 
-        Map<Long, Contact> contactsMap = new LinkedHashMap<>();
+        Map<Long, T> contactsMap = new LinkedHashMap<>();
 
         if (c != null) {
             while (c.moveToNext()) {
                 CursorHelper helper = new CursorHelper(c);
                 Long contactId = helper.getContactId();
-                Contact contact = contactsMap.get(contactId);
+                T contact = contactsMap.get(contactId);
                 if (contact == null) {
-                    contact = new Contact();
+                    contact = getCustomContact();
                     contactsMap.put(contactId, contact);
                 }
 
@@ -247,7 +247,7 @@ public final class Query {
 
     private Where buildWhereFromInclude() {
         Set<String> mimes = new HashSet<>();
-        for (Contact.Field field : include) {
+        for (Contact.AbstractField field : include) {
             if (field.getMimeType() != null) {
                 mimes.add(field.getMimeType());
             }
@@ -255,7 +255,7 @@ public final class Query {
         return Where.in(ContactsContract.Data.MIMETYPE, new ArrayList<Object>(mimes));
     }
 
-    private void addNewConstraint(Contact.Field field, Where where) {
+    private void addNewConstraint(Contact.AbstractField field, Where where) {
         if (field.getMimeType() == null) {
             defaultWhere = addWhere(defaultWhere, where);
         } else {
@@ -264,7 +264,7 @@ public final class Query {
         }
     }
 
-    private void updateContact(Contact contact, CursorHelper helper) {
+    private void updateContact(T contact, CursorHelper helper) {
         String displayName = helper.getDisplayName();
         if (displayName != null) {
             contact.addDisplayName(displayName);
@@ -343,10 +343,16 @@ public final class Query {
                     if (lunarBirthday != null) {
                         contact.addEvent(new Event(lunarBirthday, Event.Type.LUNAR_BIRTHDAY));
                     }
+                } else {
+                    buildCustomFieldToContact(mimeType, contact);
                 }
                 break;
         }
     }
+
+    protected abstract T getCustomContact();
+
+    protected abstract void buildCustomFieldToContact(String mimeType, T contact);
 
     private String[] buildProjection() {
         Set<String> projection = new HashSet<>();

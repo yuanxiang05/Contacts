@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Represents a compound contact. aggregating all phones, email and photo's a contact has.
  */
-public final class Contact {
+public class Contact {
     private Long id;
     private String displayName;
     private String givenName;
@@ -43,7 +43,7 @@ public final class Contact {
     private final Set<Address> addresses = new HashSet<>();
     private String note;
 
-    interface AbstractField {
+    public interface AbstractField {
         String getMimeType();
 
         String getColumn();
@@ -101,7 +101,10 @@ public final class Contact {
         AddressCountry(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY),
         AddressLabel(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.StructuredPostal.LABEL);
+                ContactsContract.CommonDataKinds.StructuredPostal.LABEL),
+
+        ///// Custom Field
+        LunarBirthday(LunarBirthdayUtil.MIME_TYPE, LunarBirthdayUtil.COLUMN);
 
         private final String column;
         private final String mimeType;
@@ -144,30 +147,7 @@ public final class Contact {
         }
     }
 
-    enum CustomField implements AbstractField {
-
-        LunarBirthday(LunarBirthdayUtil.MIME_TYPE, LunarBirthdayUtil.COLUMN);
-
-        private final String column;
-        private final String mimeType;
-
-        CustomField(String mimeType, String column) {
-            this.mimeType = mimeType;
-            this.column = column;
-        }
-
-        @Override
-        public String getMimeType() {
-            return mimeType;
-        }
-
-        @Override
-        public String getColumn() {
-            return column;
-        }
-    }
-
-    Contact() {
+    protected Contact() {
     }
 
     void setId(Long id) {
