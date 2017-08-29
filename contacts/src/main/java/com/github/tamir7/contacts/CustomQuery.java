@@ -129,6 +129,11 @@ public abstract class CustomQuery<T extends Contact> {
         return this;
     }
 
+    public CustomQuery andInclude(Contact.AbstractField... fields) {
+        include.addAll(Arrays.asList(fields));
+        return this;
+    }
+
     /**
      * Retrieves a list of contacts that satisfy this query.
      *
@@ -173,7 +178,10 @@ public abstract class CustomQuery<T extends Contact> {
         if (c != null) {
             while (c.moveToNext()) {
                 CursorHelper helper = new CursorHelper(c);
-                returnIds.add(helper.getContactId());
+                Long _id = helper.getContactId();
+                if (_id != null) {
+                    returnIds.add(_id);
+                }
             }
 
             c.close();
@@ -194,9 +202,11 @@ public abstract class CustomQuery<T extends Contact> {
             if (c != null) {
                 while (c.moveToNext()) {
                     CursorHelper helper = new CursorHelper(c);
-                    ids.add(helper.getContactId());
+                    Long _id = helper.getContactId();
+                    if (_id != null) {
+                        ids.add(_id);
+                    }
                 }
-
                 c.close();
             }
         } else {
@@ -228,7 +238,7 @@ public abstract class CustomQuery<T extends Contact> {
         if (c != null) {
             while (c.moveToNext()) {
                 CursorHelper helper = new CursorHelper(c);
-                Long contactId = helper.getContactId();
+                Long contactId = helper.getRawContactId();
                 T contact = contactsMap.get(contactId);
                 if (contact == null) {
                     contact = getCustomContact();

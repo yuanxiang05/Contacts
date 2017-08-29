@@ -50,7 +50,10 @@ public class Contact {
     }
 
     public enum Field implements AbstractField {
+        _Id(null, ContactsContract.RawContacts._ID),
         ContactId(null, ContactsContract.RawContacts.CONTACT_ID),
+        RawContactId(null, ContactsContract.Data.RAW_CONTACT_ID),
+
         DisplayName(null, ContactsContract.Data.DISPLAY_NAME),
         GivenName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME),

@@ -173,7 +173,10 @@ public final class Query {
         if (c != null) {
             while (c.moveToNext()) {
                 CursorHelper helper = new CursorHelper(c);
-                returnIds.add(helper.getContactId());
+                Long _id = helper.getContactId();
+                if (_id != null) {
+                    returnIds.add(helper.getContactId());
+                }
             }
 
             c.close();
@@ -194,9 +197,11 @@ public final class Query {
             if (c != null) {
                 while (c.moveToNext()) {
                     CursorHelper helper = new CursorHelper(c);
-                    ids.add(helper.getContactId());
+                    Long _id = helper.getContactId();
+                    if (_id != null) {
+                        ids.add(_id);
+                    }
                 }
-
                 c.close();
             }
         } else {
@@ -228,7 +233,7 @@ public final class Query {
         if (c != null) {
             while (c.moveToNext()) {
                 CursorHelper helper = new CursorHelper(c);
-                Long contactId = helper.getContactId();
+                Long contactId = helper.getRawContactId();
                 Contact contact = contactsMap.get(contactId);
                 if (contact == null) {
                     contact = new Contact();

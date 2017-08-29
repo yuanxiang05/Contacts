@@ -35,6 +35,10 @@ class CursorHelper {
         return getLong(ContactsContract.RawContacts.CONTACT_ID);
     }
 
+    Long getRawContactId() {
+        return getLong(ContactsContract.Data.RAW_CONTACT_ID);
+    }
+
     String getMimeType() {
         return getString(ContactsContract.Data.MIMETYPE);
     }
