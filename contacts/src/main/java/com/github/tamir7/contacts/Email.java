@@ -53,13 +53,13 @@ public class Email {
         }
     }
 
-    Email(String address, Type type) {
+    public Email(String address, Type type) {
         this.address = address;
         this.type = type;
         this.label = null;
     }
 
-    Email(String address, String label) {
+    public Email(String address, String label) {
         this.address = address;
         this.type = Type.CUSTOM;
         this.label = label;

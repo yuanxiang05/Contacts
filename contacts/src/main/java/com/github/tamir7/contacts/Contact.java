@@ -153,66 +153,66 @@ public class Contact {
     protected Contact() {
     }
 
-    void setId(Long id) {
+    protected void setId(Long id) {
         this.id = id;
     }
 
-    Contact addDisplayName(String displayName) {
+    protected Contact addDisplayName(String displayName) {
         this.displayName = displayName;
         return this;
     }
 
-    Contact addGivenName(String givenName) {
+    protected Contact addGivenName(String givenName) {
         this.givenName = givenName;
         return this;
     }
 
-    Contact addFamilyName(String familyName) {
+    protected Contact addFamilyName(String familyName) {
         this.familyName = familyName;
         return this;
     }
 
-    Contact addPhoneNumber(PhoneNumber phoneNumber) {
+    protected Contact addPhoneNumber(PhoneNumber phoneNumber) {
         phoneNumbers.add(phoneNumber);
         return this;
     }
 
-    Contact addPhotoUri(String photoUri) {
+    protected Contact addPhotoUri(String photoUri) {
         this.photoUri = photoUri;
         return this;
     }
 
-    Contact addEmail(Email email) {
+    protected Contact addEmail(Email email) {
         emails.add(email);
         return this;
     }
 
-    Contact addEvent(Event event) {
+    protected Contact addEvent(Event event) {
         events.add(event);
         return this;
     }
 
-    Contact addCompanyName(String companyName) {
+    protected Contact addCompanyName(String companyName) {
         this.companyName = companyName;
         return this;
     }
 
-    Contact addCompanyTitle(String companyTitle) {
+    protected Contact addCompanyTitle(String companyTitle) {
         this.companyTitle = companyTitle;
         return this;
     }
 
-    Contact addWebsite(String website) {
+    protected Contact addWebsite(String website) {
         websites.add(website);
         return this;
     }
 
-    Contact addNote(String note) {
+    protected Contact addNote(String note) {
         this.note = note;
         return this;
     }
 
-    Contact addAddress(Address address) {
+    protected Contact addAddress(Address address) {
         addresses.add(address);
         return this;
     }

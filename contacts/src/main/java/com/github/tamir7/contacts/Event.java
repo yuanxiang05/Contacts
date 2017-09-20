@@ -20,12 +20,12 @@ import android.provider.ContactsContract;
 
 /**
  * Represents an Event.
- *
  */
 public class Event {
-    private final String startDate;
-    private final Type type;
-    private final String label;
+
+    private String startDate;
+    private Type type;
+    private String label;
 
     public enum Type {
         CUSTOM,
@@ -51,15 +51,27 @@ public class Event {
         }
     }
 
-    Event(String startDate, Type type) {
+    public Event(String startDate, Type type) {
         this.startDate = startDate;
         this.type = type;
         this.label = null;
     }
 
-    Event(String startDate, String label) {
+    public Event(String startDate, String label) {
         this.startDate = startDate;
         this.type = Type.CUSTOM;
+        this.label = label;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setLabel(String label) {
         this.label = label;
     }
 
